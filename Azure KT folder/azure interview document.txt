@@ -1,0 +1,121 @@
+Daily responsibilities
+1. Provisioning of azure resources like VMs,Vnet,storage account,WebApp and Load balancer
+2. Manage security updates for VMs using automation account
+3. Monitor Vm metrics and logs using Azure log analytics workspace
+4. Monitor security compliance for various azure services like storage account, webapp. The compliance
+includes mandatory tags, public access, network whitelist rules
+5. Write terraform templates to automate infrastructure provisioning
+
+Azure
+1. tenant is the root of all subscriptions where the Azure AD is present
+2. subscriptions are the indiviudal billing account
+3. resource are grouped into resource groups
+4. resources can be moved from any subscription to other, resource group to other but not location
+
+Webapp
+1. It is a PaaS service where the background infra is taken care by azure
+2. It is easy to scale up (Upgrading the App service plan) and scale out (increasing the VM instances) without downtime
+3. No additional effort to configure the environment like nodejs, python, dotnet
+because they will be already available
+4. It is easy to deploy application with help of azure devops services into webapp
+5. app service plan f1 or d1 doesn't support custom domain or autoscale and only b series supports in dev/test plans
+6. app service plan in production supports custom domain, auto scale, slots, daily backups, traffic manager
+7. custom domain is required when the default azure web url is masked
+8. ssl certificates can be added to the webapp for additional security
+9. Also webapps can use containers
+10. Webapp can be secured using access restrictions in networking
+11. Webapp can be used on linux or windows OS
+12. Webapp framework can be either code or docker based
+
+Storage account
+1. primarily used to store blobs and files. Also stores queues and tables
+2. tables are of nosql type based on partition key
+3. queues are used for messaging service
+4. Files are used for creating network file shares
+5. Blobs are used to store large objects like page blob(Virtual hard disk - storage) or files
+like logs and also used to host static website
+6. It can be secured with help of networking where we can allow only selected networks to access
+7. A list of ip address can be whitelisted or an existing virtual network can be attached
+8. Replications are available as LRS, RAGRS, GRS, ZRS
+9. RAGRS is read access globaly redundant storage
+10. Access tiers - Hot (frequently accessed data) and cool (infrequently accessed data - eg: backup purpose)
+11. Storage account types
+	1. standard general purpose v2
+	2. Premium - blob, file share, page blob
+12. Networking in storage is used to restrict only required IPs to access. whitelist IPs or add existing virtual network using service endpoint
+13. Also private endpoint can be created between vnet and storage account
+14. Container access can be private or blob level or container level
+15. Private access is always recommended for containers
+16. Blobs with private access be downloaded or uploaded using the azure storage account access keys or SAS
+17. Access keys are with admin privilleges
+18. SAS with only limited access
+
+VM
+1. vnet, subnet, nsg, nic and vm
+2. nsg can be attached to subnet or nic
+3. first subnet nsg rules are applied and then nic nsg rules
+4. inbound rules are added into nsg with order of priority from 100
+5. Each rule can allow different ports with comma separated and different protocols like tcp, udp
+6. VM storage is taken care by managed disks where Azure holds responsibility of the hardware
+7. Managed disks can be HDD or SSD(premium or standard)
+8. Premium SSD are used for high frequency operations like DB transactions
+9. High availability is acheived with help of availability set or availability zone depending on
+the region
+10. If availability zones are not available then we can go with Azure Site Recovery
+11. Availability set only offers security upto 99.95% where zone offers 99.99%
+12. Update domain represents VMS in a single rack and taken care by azure during planned activities like system updates
+13. Fault domain represents VMS in different rack with individual power and network source
+14. A VM can be created only with vnet in the same region and not different region
+15. VM and Vnet can be in different resource group but not different location
+16. VM size change requires restart
+17. A nic can have more than one IP but only one can be primary
+
+Vnet
+1. Vnets can be peered between different region or subscription
+2. route tables are used to route traffic from source to destination via next HOP
+3. route table has a route which tells connection to which endpoint(subnet ip range or individual ip) should pass through which HOP(virtual appliance or vnet)
+4. route table has to be attached to a subnet for which you want to define the route
+5. Subnets are used to divide the address space among different tiers
+6. Subnets can be assigned to NSG to filter incoming connections
+7. NSG has inbound and outbound rules
+8. Rules contain priority, source address, source port, destination address and destination port
+9. In inbound rule, source address can be either ip or service tag(internet, vnet, vpn)
+10. On-prem and azure can be peered using vpn gateway
+11. Within Azure, both vnets can be linked using vnet peering
+12. by default azure vnets come in class A, 0 - 127 (0.0.0.0 - 127.0.0.0)
+
+ARM deployment
+1. ARM has template and parameter file
+2. Also parameter can be passed with help of powershell
+3. New-AZResourceGroupDeployment is the cmdlet used to deploy ARM template
+4. Test-AZResourceGroupDeployment is the cmdlet to validate ARM template
+5. azure cli can also be used to manage or provision infrastructure but is not flexible as enough as ARM template
+6. azure cli can login to azure using service principal with the help of --serviceprincipal flag parameter
+7. also azure cli can login to azure using browser
+
+Terraform
+1. It is an infra automation tool
+2. It uses HCL as a language to write templates
+3. It connects with Azure with the help of Service Principal - client id, client secret, tenant id
+subscription id
+4. Best practice to store state files with help of remote backend - store it in azure
+storage account - blobs
+5. State files are secured by setting access level of storage containers to private
+6. State file contains the current state of the infrastructure
+7. Data block is used to retreive/query the infrastructure with help of tags, name, resource group
+and pass it to te resource block in a template
+8. Modules are individual folders inside the root folder and each module will contain its own
+main.tf file
+9. The main.tf file in root folder will call the module with the help of module block
+10. The module block will contain the source parameter to refer its location
+11. The outputs of one module can be passed on to the other by calling module.modulename.outputname
+12. Sensitive inputs in terraform variables can be masked with help of setting sensitive parameter
+to true but this applies only from version 0.14
+13. Prior to that we can store the secrets in vault like azure keyvault or hashicorp vault and 
+use them in the template
+14. Also encoding functions like md5 or base64 can be used to hide secrets
+15. In an azure VM with identity assigned, terraform templates can execute without spn
+16. Azure devops create service connection and use it in terraform task instead of having client id and secret in terraform template
+17. Terraform validate will validate the configuration files for syntax and correctness of attribute types and names
+18. Terraform refresh reads the current settings of azure resources and update them in state file
+

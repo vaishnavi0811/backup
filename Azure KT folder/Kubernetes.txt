@@ -1,0 +1,78 @@
+Kubernetes::
+	Open-source platform that manages the container workloads
+	Provides DNS name for a container
+	Used as a load balancer and distributes network traffic
+	Restarts the containers that fails
+	Manages passwords,OAuth tokens and SSH keys.
+
+The app.yml and service.yml file are added to a zip file added as a resource to this chapter
+
+You can use the below commands to work with Azure Kubernetes
+
+// Create a new resource group
+az group create --name kubernetes --location eastus
+
+// Create a new Kubernetes cluster
+az aks create --resource-group kubernetes --name companycluster --node-count 1 --enable-addons monitoring --generate-ssh-keys
+
+// Install the kubectl tool
+az aks install-cli --install-location=./kubectl
+
+// Get the credentials of the cluster
+az aks get-credentials --resource-group kubernetes --name companycluster
+
+// Get the nodes running in the cluster
+kubectl get nodes
+
+// Apply the application configuration file
+kubectl apply -f app.yml
+
+// Apply the sercive configuration file
+kubectl apply -f service.yml
+
+// Get the list of services running in Kubernetes
+kubectl get services
+
+Use the following commands to practice working with the Azure container registry
+
+Install the Azure command line interface
+
+curl -sL https://packages.microsoft.com/keys/microsoft.asc | \
+
+    gpg --dearmor | \
+
+    sudo tee /etc/apt/trusted.gpg.d/microsoft.asc.gpg > /dev/null
+
+// Setup the repository
+AZ_REPO=$(lsb_release -cs)
+
+echo "deb [arch=amd64] https://packages.microsoft.com/repos/azure-cli/ $AZ_REPO main" | \
+
+    sudo tee /etc/apt/sources.list.d/azure-cli.list
+
+// Update the package index
+sudo apt-get update
+
+// Install the Azure command line interface
+sudo apt-get install azure-cli
+
+// Login into Azure
+sudo az login
+
+// Login in your repository
+sudo az acr login --name appregistry9090
+
+// Tag your repository
+sudo docker tag nginx:1.17.0 appregistry9090.azurecr.io/nginx
+
+// Push the image to the repository
+sudo docker push appregistry9090.azurecr.io/nginx
+
+// Update the Kubernetes cluster to access the repository
+az aks update -n companycluster -g kubernetes --attach-acr appregistry9090
+
+// Delete the existing deployments and services
+kubectl delete services company-service
+kubectl delete deployment nginx
+
+Then apply the application deployment and service files

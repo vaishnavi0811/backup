@@ -1,0 +1,57 @@
+Connect-AzAccount -> To connect to Azure
+Get-AzResourceGroup -Location southindia -> To get the resourcegroups in particular location
+
+// Allow remote signed scripts to run
+
+Set-ExecutionPolicy RemoteSigned
+
+//Installing the Azure PowerShell modules
+
+Install-Module -Name Az -AllowClobber -Scope CurrentUser
+
+// Import all the Azure modules
+
+Import-Module Az -Verbose
+
+// Connect to your Azure account
+
+Connect-AzAccount
+
+// Get all resource groups running in a particular region
+
+Get-AzResourceGroup -Location centralus
+
+
+Azure CLI for quickly creating a virtual machine
+
+az vm create --resource-group azuredemo --name demovm --image win2016datacenter --admin-username demousr --admin-password AzurePortal@123
+
+PowerShell command for quickly creating a virtual machine
+
+New-AzVm -ResourceGroupName azuredemo -Name backupvm -Location CentralUS -Image win2016datacenter -Credential (Get-Credential)
+
+
+PowerShell command for adding a data disk
+
+$resourcegroup = 'azuredemo'
+
+$machinename = 'demovm'
+
+$location = 'Central US'
+
+$storageType = 'Premium_LRS'
+
+$dataDiskName = 'newdisk01'
+
+$dataDiskSize = 10
+
+
+$datadiskConfig = New-AzDiskConfig -SkuName $storageType -Location $location -CreateOption Empty -DiskSizeGB $dataDiskSize
+
+$dataDisk01 = New-AzDisk -DiskName $dataDiskName -Disk $datadiskConfig -ResourceGroupName $resourcegroup
+
+$vm = Get-AzVM -Name $machinename -ResourceGroupName $resourcegroup
+
+$vm = Add-AzVMDataDisk -VM $vm -Name $dataDiskName -CreateOption Attach -ManagedDiskId $dataDisk01.Id -Lun 1
+
+Update-AzVM -VM $vm -ResourceGroupName $resourcegroup

@@ -1,0 +1,97 @@
+Creating VM
+	Compute (RAM,CPU,OS)
+	Storage (Disk)
+	Newtwork(IP address)
+	Security(NSG - inbound & outbound rules)
+	Redeploy option - deploys the VM on differenmt host.
+Network Security group
+	creating NSG
+	applying NSG at subnet level
+	applying NSG at VM level
+Storage account
+	creating storage account by integrating the vnet
+	By selecting all networks
+	selected networks
+	creating file share and mounting it on the VM
+	uploading the file in container
+	Access tiers - 
+Service Principal Name
+	Steps to create SPN:: Azure AD -> App Registration
+
+Peering
+	Provides connectivity between the VMs that falls under different Vnets.	
+
+Route tables
+	Gives the path between the connection staring from one subnet (source) to the other subnet(destination). 
+VPN gateway
+	connecting the 2 different networks
+		Point-site VPN
+		Site-Site VPN
+		Root certificate need to be uploaded(extn .cer)
+
+Steps to create VPN::
+	Create the VPN service
+	Generate self-signed certificate
+	Go to certmgr.msc -> Personal -> Certificates -> export the root certifificate
+	Open the root cert and provide the cert content in (VPN name -> User VPN config -> Root certificate)
+	Give Download VPN client
+	Install that on your local machine
+	connect to the VPN and check if the VM is accessible through the private IP.	
+
+Keyvault
+	
+	Used for storing secrets(passwords)
+		Access policies - user should be added to the access policies to view the secrets
+		IAM - The user can be added to the access policy only if he/she is a part of Azure IAM.
+VM scaleset
+	Used for splitting the process to different VMs under the scale set in case of high utilization.
+Web App
+	Its based on PaaS (Platform as a Service).
+	We can just deploy a code and the harware/network are maintained by Azure.
+Azure file sync
+	create a storage account and file share in it
+	create azure file sync service
+	create sync group
+	configure cloud endpoint
+	Install Azure file sync agent on VM (can be done only on servers)
+	configure server endpoint (while configuring need to mention the path in which the files are going to be stored)
+	
+Domain joining in Windows AD
+	Install AD role on the server
+Load balancer
+	works only in tcp port (4th layer of OSI model)
+	VMs in a particluar availabilty set can be added in a single backend pool
+SQL database
+App gateway
+	Works in layer 7 of OSI model (Application layer).
+	Used for load balancing purpose.
+	SSL offload - Provides security for the data.
+Web app (in detail)
+Log Analytics workspace
+	Used for monitoring purpose.
+	It has to be enabled on all the resources under Diagnostics settings to get the logs.
+	These logs are used for troubleshooting.
+	Default retention period - 31 days.
+Function App
+	Used for server-less execution.
+	For example, any code can be uploaded to perform the action on daily basis at particular point of time.(like VM shutdown at off business hours).
+Network watcher
+	Used to troubleshoot where the connection gets blocked exactly.
+		IP flow verify
+		Next hop
+		VPN troubleshoot
+		Connection troubleshoot
+Azure Active Directory(AD)
+	Arecord - maps domain name to Ip address
+	Cname - maps domain name to FQDN
+	MXrecord - used for mail servers
+Looping in ARM template
+Availability Set
+	Fault domain - Logical grouping of hardware that shares common power source and network switch. 
+	Update domain - Logical grouping of hardware that undergoes maintenance or reboot at a same time. The VMs in update domains are not rebooted in a sequential order.
+		
+	
+
+
+	
+	
