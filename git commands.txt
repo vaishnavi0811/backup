@@ -1,0 +1,17 @@
+git --version - to check the version of git
+To setup global configuration variable
+	git config --global user.name "username"
+	git config --global user.email "emailid"
+git config --list - to check if the global variables are configured
+git init - to create a repository on local
+
+git clone - to take a copy of the code from the remote repository
+git commit - to save the code in local repository
+	command:: git commit -m 'Comments'
+git pull - to get the updated code from the remote repository to local repository
+git push - to move the updated code from local repository to the remote repository
+	command:: git push origin <branch name>
+git log - To get the logs releated to the changes made.
+git diff - 
+
+
